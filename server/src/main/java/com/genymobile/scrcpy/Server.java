@@ -91,7 +91,8 @@ public final class Server {
         }
 
         int scid = options.getScid();
-        boolean tunnelForward = options.isTunnelForward();
+        boolean useTcpConnection = options.useTcpConnection();
+        boolean tunnelForward = useTcpConnection ? false : options.isTunnelForward();
         boolean control = options.getControl();
         boolean video = options.getVideo();
         boolean audio = options.getAudio();
@@ -101,7 +102,8 @@ public final class Server {
 
         List<AsyncProcessor> asyncProcessors = new ArrayList<>();
 
-        DesktopConnection connection = DesktopConnection.open(scid, tunnelForward, video, audio, control, sendDummyByte);
+        DesktopConnection connection = DesktopConnection.open(scid, tunnelForward, video, audio, control, sendDummyByte,
+                options.getListenAddress(), options.getListenPort());
         try {
             if (options.getSendDeviceMeta()) {
                 connection.sendDeviceMeta(Device.getDeviceName());
