@@ -37,6 +37,8 @@ public class Options {
     private float maxFps;
     private float angle;
     private boolean tunnelForward;
+    private String listenAddress;
+    private int listenPort = -1;
     private Rect crop;
     private boolean control = true;
     private int displayId;
@@ -138,6 +140,18 @@ public class Options {
 
     public boolean isTunnelForward() {
         return tunnelForward;
+    }
+
+    public String getListenAddress() {
+        return listenAddress;
+    }
+
+    public int getListenPort() {
+        return listenPort;
+    }
+
+    public boolean useTcpConnection() {
+        return listenAddress != null || listenPort != -1;
     }
 
     public Rect getCrop() {
@@ -375,6 +389,17 @@ public class Options {
                     break;
                 case "tunnel_forward":
                     options.tunnelForward = Boolean.parseBoolean(value);
+                    break;
+                case "listen_address":
+                    if (!value.isEmpty()) {
+                        options.listenAddress = value;
+                    }
+                    break;
+                case "listen_port":
+                    options.listenPort = Integer.parseInt(value);
+                    if (options.listenPort < 0) {
+                        throw new IllegalArgumentException("listen_port may not be negative: " + options.listenPort);
+                    }
                     break;
                 case "crop":
                     if (!value.isEmpty()) {
